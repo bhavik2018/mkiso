@@ -3,11 +3,15 @@
 set -x
 export LANG=C
 export LC_ALL=C
+export DEBIAN_FRONTEND=noninteractive
 
 PACKAGES='
 nxos-desktop
 lupin-casper
 casper
+linux-image-generic
+calamares
+calamares-settings-nxos
 '
 
 PACKAGES=$(echo $PACKAGES | tr '\n' ' ')
@@ -32,9 +36,9 @@ rm nxos.key
 apt-get update
 apt-get -qq install $PACKAGES || exit 1
 apt-get clean
-useradd -m -U -G sudo,cdrom,adm,dip,plugdev -p '' me
-echo 'me:nitrux' | chpasswd
-echo host > /etc/hostname
+/bin/sh -i
+
 systemctl enable sddm
 find /var/log -regex '.*?[0-9].*?' -exec rm -v {} \;
-rm /etc/resolv.conf
+
+# grub-mkimage -O x86_64-efi -p /boot/grub >> /boot/grub/efi.img

@@ -9,12 +9,15 @@ sudo mount -t devtmpfs none filesystem/dev || exit 1
 sudo mkdir -p /dev/pts
 sudo mount -t devpts none filesystem/dev/pts || exit 1
 
+sudo cp /etc/resolv.conf filesystem/etc/
 
 # Install the nxos-desktop to `filesystem/`
 
 sudo cp ${source_dir}/config/chroot.sh filesystem/
 sudo chroot filesystem/ /bin/sh /chroot.sh
-sudo rm -r filesystem/chroot.sh
+
+sudo rm filesystem/chroot.sh
+sudo rm filesystem/etc/resolv.conf
 
 sudo umount filesystem/dev/pts
 sudo umount filesystem/dev
