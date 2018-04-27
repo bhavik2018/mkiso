@@ -1,37 +1,8 @@
 #! /bin/sh
 
-# Prepare the root filesystem.
+./build.d/01.make.base.filesystem.sh || exit 1
 
-mkdir -p \
-	filesystem \
-	iso/casper \
-	iso/boot/isolinux
-
-wget -q http://cdimage.ubuntu.com/ubuntu-base/daily/20180409/bionic-base-amd64.tar.gz
-tar xf *.tar.gz -C filesystem
-
-rm -rf filesystem/dev/*
-cp /etc/resolv.conf filesystem/etc/
-
-mkdir -p \
-	filesystem/dev \
-	filesystem/proc
-
-mount -t proc none filesystem/proc || exit 1
-mount -t devtmpfs none filesystem/dev || exit 1
-
-mkdir -p /dev/pts
-mount -t devpts none filesystem/dev/pts || exit 1
-
-
-# Install the nxos-desktop to `filesystem/`
-
-cp config/chroot.sh filesystem/
-chroot filesystem/ /bin/sh /chroot.sh
-rm -r filesystem/chroot.sh
-
-umount filesystem/dev
-umount filesystem/proc
+./build.d/02.install.nxos.sh || exit 1
 
 cp filesystem/vmlinuz iso/boot/linux
 cp filesystem/initrd.img iso/boot/initramfs
